@@ -9,6 +9,8 @@ jobs:
   build:
     name: DBT Runner
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v3
