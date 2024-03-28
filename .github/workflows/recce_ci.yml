@@ -1,0 +1,74 @@
+name: Jaffle Shop Recce CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-pull-request:
+    name: Check pull request by Recce CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10.x"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Install Recce - Nightly
+        run: |
+          pip install recce-nightly
+      - name: Prepare dbt Base environment
+        run: |
+          if aws s3 cp s3://$AWS_S3_BUCKET/${{ github.event.pull_request.base.sha }}.tar.gz .; then
+            echo "Base environment found in S3"
+            tar -xvf ${{ github.event.pull_request.base.sha }}.tar.gz
+          else
+            echo "Base environment not found in S3. Running dbt to create base environment"
+            git checkout ${{ github.event.pull_request.base.sha }}
+            dbt deps
+            dbt seed --target ${{ env.DBT_BASE_TARGET }} --target-path target-base
+            dbt run --target ${{ env.DBT_BASE_TARGET }} --target-path target-base
+            dbt docs generate --target ${{ env.DBT_BASE_TARGET }} --target-path target-base  
+          fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          DBT_BASE_TARGET: "prod"
+
+      - name: Prepare dbt Current environment
+        run: |
+          git checkout ${{ github.event.pull_request.head.sha }}
+          dbt deps
+          dbt seed --target ${{ env.DBT_CURRENT_TARGET}}
+          dbt run --target ${{ env.DBT_CURRENT_TARGET}}
+          dbt docs generate --target ${{ env.DBT_CURRENT_TARGET}}
+        env:
+          DBT_CURRENT_TARGET: "dev"
+
+      - name: Run Recce CI
+        run: |
+          recce run --github-pull-request-url ${{ github.event.pull_request.html_url }}
+
+      - name: Archive Recce State File
+        uses: actions/upload-artifact@v4
+        id: recce-artifact-uploader
+        with:
+          name: recce-state-file
+          path: recce_state.json
+
+      - name: Comment on pull request
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Recce `run` successfully completed.
+            Please download the [artifact](${{ env.ARTIFACT_URL }}) for the state file.
+        env:
+          ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
