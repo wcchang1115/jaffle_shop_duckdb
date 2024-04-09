@@ -20,9 +20,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-      - name: Install Recce - Nightly
+      - name: Install Recce
         run: |
-          pip install recce-nightly
+          pip install recce
       - name: Prepare dbt Base environment
         run: |
           if aws s3 cp s3://$AWS_S3_BUCKET/${{ github.event.pull_request.base.sha }}.tar.gz .; then
