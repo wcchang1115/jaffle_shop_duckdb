@@ -23,6 +23,9 @@ jobs:
       - name: Install Recce
         run: |
           pip install recce
+      - name: Add packages.yml file
+        run: |
+          echo "${{ vars.PACKAGES_YAML }}" > packages.yml
       - name: Prepare dbt Base environment
         run: |
           if aws s3 cp s3://$AWS_S3_BUCKET/${{ github.event.pull_request.base.sha }}.tar.gz .; then
