@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Install Recce
         run: |
-          pip install recce
+          pip install recce-nightly==0.15.0.20240426a389
       - name: Add packages.yml file
         run: |
           echo '${{ vars.PACKAGES_YAML }}' > packages.yml
@@ -67,11 +67,20 @@ jobs:
           name: recce-state-file
           path: recce_state.json
 
+      - name: Prepare Recce Summary
+        id: recce-summary
+        run: |
+          recce summary --state-file recce_state.json > recce_summary.md
+          cat recce_summary.md >> $GITHUB_STEP_SUMMARY
+          echo "${{ env.NEXT_STEP_MESSAGE }}" >> recce_summary.md
+        env:
+          ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
+          NEXT_STEP_MESSAGE: |
+            ## Next Steps
+            Recce `run` successfully completed.
+            Please download the [artifact](${{ steps.recce-artifact-uploader.outputs.artifact-url }}) for the state file.
+
       - name: Comment on pull request
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: |
-            Recce `run` successfully completed.
-            Please download the [artifact](${{ env.ARTIFACT_URL }}) for the state file.
-        env:
-          ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
+          filePath: recce_summary.md
