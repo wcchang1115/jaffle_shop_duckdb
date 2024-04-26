@@ -77,14 +77,17 @@ jobs:
           ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
           NEXT_STEP_MESSAGE: |
             ## Next Steps
-            If you want to check more detail inforamtion about the recce result,
-            please download the [artifact](${{ steps.recce-artifact-uploader.outputs.artifact-url }}) file and open it by [Recce](https://pypi.org/project/recce/) CLI.
-            ```bash
-              # Unzip the downloaded artifact file
-              tar -xf recce-state-file.zip
+            If you want to check more detail inforamtion about the recce result, please download the [artifact](${{ steps.recce-artifact-uploader.outputs.artifact-url }}) file and open it by [Recce](https://pypi.org/project/recce/) CLI.
 
-              # Launch the recce server based on the state file
-              recce server --review recce_state.json
+            ### How to check the recce result
+            ```bash
+            # Unzip the downloaded artifact file
+            tar -xf recce-state-file.zip
+
+            # Launch the recce server based on the state file
+            recce server --review recce_state.json
+
+            # Open the recce server http://localhost:8000 by your browser
             ```
 
       - name: Comment on pull request
