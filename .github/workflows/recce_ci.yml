@@ -70,7 +70,7 @@ jobs:
       - name: Prepare Recce Summary
         id: recce-summary
         run: |
-          recce summary --state-file recce_state.json > recce_summary.md
+          recce summary recce_state.json > recce_summary.md
           cat recce_summary.md >> $GITHUB_STEP_SUMMARY
           echo "${{ env.NEXT_STEP_MESSAGE }}" >> recce_summary.md
         env:
