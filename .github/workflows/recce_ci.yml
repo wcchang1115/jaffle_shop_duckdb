@@ -72,13 +72,20 @@ jobs:
         run: |
           recce summary recce_state.json > recce_summary.md
           cat recce_summary.md >> $GITHUB_STEP_SUMMARY
-          echo "${{ env.NEXT_STEP_MESSAGE }}" >> recce_summary.md
+          echo '${{ env.NEXT_STEP_MESSAGE }}' >> recce_summary.md
         env:
           ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
           NEXT_STEP_MESSAGE: |
             ## Next Steps
-            Recce `run` successfully completed.
-            Please download the [artifact](${{ steps.recce-artifact-uploader.outputs.artifact-url }}) for the state file.
+            If you want to check more detail inforamtion about the recce result,
+            please download the [artifact](${{ steps.recce-artifact-uploader.outputs.artifact-url }}) file and open it by [Recce](https://pypi.org/project/recce/) CLI.
+            ```bash
+              # Unzip the downloaded artifact file
+              tar -xf recce-state-file.zip
+
+              # Launch the recce server based on the state file
+              recce server --review recce_state.json
+            ```
 
       - name: Comment on pull request
         uses: thollander/actions-comment-pull-request@v2
