@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Install Recce
         run: |
-          pip install recce-nightly
+          pip install recce-nightly==0.17.0.20240508a0
       - name: Add packages.yml file
         run: |
           echo '${{ vars.PACKAGES_YAML }}' > packages.yml
