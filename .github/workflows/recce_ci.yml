@@ -46,7 +46,13 @@ jobs:
         run: |
           recce run --github-pull-request-url ${{ github.event.pull_request.html_url }}
 
-      - name: Archive Recce State File
+      - name: Upload DBT Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: target
+          path: target/
+
+      - name: Upload Recce State File
         uses: actions/upload-artifact@v4
         id: recce-artifact-uploader
         with:
