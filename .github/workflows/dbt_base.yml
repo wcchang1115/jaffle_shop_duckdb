@@ -1,16 +1,13 @@
 name: DBT Base Environment
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-
 jobs:
   build:
-    name: DBT Runner
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
 
     steps:
       - uses: actions/checkout@v3
@@ -27,24 +24,18 @@ jobs:
       - name: Run DBT
         run: |
           dbt deps
-          dbt seed --target ${{ env.DBT_BASE_TARGET }} --target-path target-base
-          dbt run --target ${{ env.DBT_BASE_TARGET }} --target-path target-base
-          dbt docs generate --target ${{ env.DBT_BASE_TARGET }} --target-path target-base
+          dbt seed --target ${{ env.DBT_BASE_TARGET }}
+          dbt run --target ${{ env.DBT_BASE_TARGET }}
+          dbt docs generate --target ${{ env.DBT_BASE_TARGET }}
         env:
           DBT_BASE_TARGET: "prod"
 
-      - name: Package DBT artifacts
-        run: |
-          tar -czvf dbt-artifacts.tar.gz target-base ${{ env.DB_FILE }}
-          mv dbt-artifacts.tar.gz $GITHUB_WORKSPACE/${{ github.sha }}.tar.gz
-        env:
-          DB_FILE: "jaffle_shop.duckdb"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: duckdb
+          path: jaffle_shop.duckdb
 
-      - name: Upload to S3
-        run: |
-          aws s3 cp $GITHUB_WORKSPACE/${{ github.sha }}.tar.gz s3://${{ env.AWS_S3_BUCKET }}/${{ github.sha }}.tar.gz
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # Set these in your repository secrets
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Set these in your repository secrets
-          AWS_REGION: ${{ secrets.AWS_REGION }} # Set these in your repository secrets
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }} # Set these in your repository secrets
+      - uses: actions/upload-artifact@v4
+        with:
+          name: target
+          path: target/
