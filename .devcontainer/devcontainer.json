@@ -4,7 +4,8 @@
     "containerEnv": {
         "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml", // Path to the Recce CI workflow file
         "DEPENDENCIES_FILE": "requirements.txt", // Path to the python dependencies file
-        "POST_INSTALL_DEPENDENCIES_COMMAND": "pip install gradio" // Command to install python dependencies
+        "POST_INSTALL_DEPENDENCIES_COMMAND": "pip install gradio", // Command to install python dependencies
+        "PRE_LAUNCH_RECCE_SERVER_COMMAND": "cp .recce/recce-state-file/jaffle_shop.duckdb ."
     },
     "customizations": {
         "vscode": {

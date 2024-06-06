@@ -57,7 +57,9 @@ jobs:
         id: recce-artifact-uploader
         with:
           name: recce-state-file
-          path: recce_state.json
+          path: |
+            recce_state.json
+            jaffle_shop.duckdb
 
       - name: Prepare Recce Summary
         id: recce-summary
