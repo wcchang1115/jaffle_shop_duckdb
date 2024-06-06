@@ -19,9 +19,9 @@
         "problemMatcher": [],
 
         // Try start the task on folder open
-        "runOptions": {
-            "runOn": "folderOpen"
-        },
+        // "runOptions": {
+        //     "runOn": "folderOpen"
+        // },
         // Create the tasks in a terminal group
         "presentation": {
           "panel": "shared",
