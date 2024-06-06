@@ -1,0 +1,24 @@
+{
+    "name": "Recce Cloud",
+    "image": "infuseai/dev-container-base-image:latest",
+    "containerEnv": {
+        "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml", // Path to the Recce CI workflow file
+        "DEPENDENCIES_FILE": "requirements.txt", // Path to the python dependencies file
+        "POST_INSTALL_DEPENDENCIES_COMMAND": "pip install gradio" // Command to install python dependencies
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            }
+        }
+    },
+    "forwardPorts": [ 8000 ],
+    "portsAttributes": {
+        "8000": {
+            "label": "Recce Server",
+            "onAutoForward": "openBrowser"
+        }
+    },
+    "postStartCommand": "post_start_command"
+}
