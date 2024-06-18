@@ -1,25 +1,14 @@
 {
     "name": "Recce Cloud",
-    "image": "infuseai/dev-container-base-image:latest",
-    "containerEnv": {
-        "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml", // Path to the Recce CI workflow file
-        "DEPENDENCIES_FILE": "requirements.txt", // Path to the python dependencies file
-        "POST_INSTALL_DEPENDENCIES_COMMAND": "pip install gradio", // Command to install python dependencies
-        "PRE_LAUNCH_RECCE_SERVER_COMMAND": "cp .recce/recce-state-file/jaffle_shop.duckdb ."
+    "build": {
+        "dockerfile": "Dockerfile"
     },
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "terminal.integrated.shell.linux": "/bin/bash"
-            }
-        }
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
     },
-    "forwardPorts": [ 8000 ],
-    "portsAttributes": {
-        "8000": {
-            "label": "Recce Server",
-            "onAutoForward": "openBrowser"
-        }
+    "postCreateCommand": {
+        "dbt": "dbt deps",
+        "artifact": "gh repo set-default DataRecce/jaffle_shop_duckdb && run_id=$(gh run list --workflow \"Jaffle Shop Recce CI\" --status success --limit 1 --json databaseId --jq '.[0].databaseId') && gh run download $run_id -n duckdb"
     },
-    "postStartCommand": "post_start_command"
+    "postStartCommand": "recce server --cloud --review"
 }
