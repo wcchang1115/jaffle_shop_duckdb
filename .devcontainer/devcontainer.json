@@ -6,9 +6,5 @@
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
-    "postCreateCommand": {
-        "dbt": "dbt deps",
-        "artifact": "gh repo set-default DataRecce/jaffle_shop_duckdb && run_id=$(gh run list --workflow \"Jaffle Shop Recce CI\" --status success --limit 1 --json databaseId --jq '.[0].databaseId') && gh run download $run_id -n duckdb"
-    },
-    "postStartCommand": "recce server --cloud --review"
+    "postStartCommand": "./.devcontainer/script/post_start.sh"
 }
