@@ -67,7 +67,7 @@ jobs:
         run: |
           recce summary --cloud --cloud-token ${{ secrets.RECCE_CLOUD_TOKEN }} > recce_summary.md
           cat recce_summary.md >> $GITHUB_STEP_SUMMARY
-          # echo '${{ env.NEXT_STEP_MESSAGE }}' >> recce_summary.md
+          echo '${{ env.NEXT_STEP_MESSAGE }}' >> recce_summary.md
 
           # Handle the case when the recce summary is too long to be displayed in the GitHub PR comment
           if [[ `wc -c recce_summary.md | awk '{print $1}'` -ge '65535' ]]; then
