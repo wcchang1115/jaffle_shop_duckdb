@@ -4,23 +4,16 @@ github:
 
 # Recce Preset Checks
 checks:
-  - name: Model schema of customers
+  - name: Model schema of customers, orders and modified nodes
     description: The schema of customers should not be changed
     type: schema_diff
     params:
-      node_id: model.jaffle_shop.customers
-  - name: Model schema of orders
-    description: The schema of orders should not be changed
-    type: schema_diff
-    params:
-      node_id: model.jaffle_shop.orders
-  - name: Row count of customers and orders models
+      select: customers orders state:modified
+  - name: Row count of customers, orders and modified table model
     description: The row count of customers and order should not be changed
     type: row_count_diff
     params:
-      node_names:
-        - customers
-        - orders
+      select: customers orders state:modified,config.materialized:table
   - name: Value diff of customers
     description: The customer_lifetime_value in customers should be 100% matched
     type: value_diff
@@ -40,7 +33,7 @@ checks:
             AVG(customer_lifetime_value) AS avg_lifetime_value
         FROM
             {{ ref("customers") }}
-        WHERE first_order is not NULL    
+        WHERE first_order is not NULL
         GROUP BY
             first_order_week
         ORDER BY
