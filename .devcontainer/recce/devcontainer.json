@@ -1,10 +1,11 @@
 {
-    "name": "Recce Cloud",
+    "name": "Recce CodeSpace",
     "build": {
         "dockerfile": "Dockerfile"
     },
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
+    "forwardPorts": [8000],
     "postStartCommand": "./.devcontainer/script/post_start.sh"
 }
