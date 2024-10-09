@@ -33,6 +33,7 @@ jobs:
           gh run download ${run_id} -n target -D target-base
           gh run download ${run_id} -n duckdb
         env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WORKFLOW_BASE: ".github/workflows/dbt_base.yml"
 
       - name: Prepare dbt Current environment
