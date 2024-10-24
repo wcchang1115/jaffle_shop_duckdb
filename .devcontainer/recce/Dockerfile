@@ -1,3 +1,6 @@
 FROM mcr.microsoft.com/vscode/devcontainers/python:3.11
 
-RUN pip install dbt-duckdb==1.5.0 duckdb==0.7.1 recce
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir recce
