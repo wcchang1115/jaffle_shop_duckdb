@@ -1,7 +1,8 @@
 {
     "name": "Recce CodeSpace",
     "build": {
-        "dockerfile": "Dockerfile"
+        "dockerfile": "Dockerfile",
+        "context": "../../"
     },
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
