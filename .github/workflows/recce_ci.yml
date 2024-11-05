@@ -1,7 +1,7 @@
 name: Jaffle Shop Recce CI
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [main]
 
 jobs:
@@ -13,6 +13,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      - name: Check if the PR is up-to-date
+        if: github.event_name != 'push'
+        uses: Automattic/action-pr-is-up-to-date@v2
+        with:
+          tags: latest
 
       - name: Set up Python
         uses: actions/setup-python@v4
