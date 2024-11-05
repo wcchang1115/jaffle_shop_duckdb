@@ -17,8 +17,6 @@ jobs:
       - name: Check if the PR is up-to-date
         if: github.event_name != 'push'
         uses: Automattic/action-pr-is-up-to-date@v2
-        with:
-          tags: latest
 
       - name: Set up Python
         uses: actions/setup-python@v4
