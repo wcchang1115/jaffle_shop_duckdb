@@ -1,7 +1,7 @@
 name: Jaffle Shop Recce CI
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [main]
 
 jobs:
@@ -14,9 +14,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check if the PR is up-to-date
-        if: github.event_name != 'push'
-        uses: Automattic/action-pr-is-up-to-date@v2
+      - name: Merge Base Branch into PR
+        - uses: cycleapple/PR-Update@v1
+        - with:
+        - baseBranch: ${{ github.event.pull_request.base.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
