@@ -31,15 +31,10 @@ jobs:
 
       - name: Prepare dbt Base environment
         run: |
-          gh repo set-default ${{ github.repository }}
-          base_branch=${{ github.base_ref }}
-          run_id=$(gh run list --workflow ${WORKFLOW_BASE} --branch ${base_branch} --status success --limit 1 --json databaseId --jq '.[0].databaseId')
-          echo "Download artifacts from run $run_id"
-          gh run download ${run_id} -n target -D target-base
-          gh run download ${run_id} -n duckdb
+          recce cloud download-base-artifacts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WORKFLOW_BASE: ".github/workflows/dbt_base.yml"
+          GITHUB_TOKEN: ${{ secrets.RECCE_CLOUD_TOKEN }}
+          RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD}}
 
       - name: Prepare dbt Current environment
         run: |
@@ -59,10 +54,11 @@ jobs:
           RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD}}
 
       - name: Upload DBT Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: target
-          path: target/
+        run: |
+          recce cloud upload-artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.RECCE_CLOUD_TOKEN }}
+          RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD}}
 
       - name: Upload Recce State File
         uses: actions/upload-artifact@v4
